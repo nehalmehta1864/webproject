@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.niit.dao.cartmodeldao;
+import com.niit.dao.CartDao;
 import com.niit.dao.categorydao;
 import com.niit.dao.usermodeldao;
 import com.niit.model.CartModel;
@@ -25,23 +25,22 @@ public class UserController {
 
 	@Autowired
 	usermodeldao userDao;
-	@Autowired
-	cartmodeldao cartDao;
+
 	@Autowired
 	categorydao categoriesDao;
+
+	@Autowired
+	CartDao cartDao;
 
 	@RequestMapping("/notaccessible")
 	public String notaccess() {
 		return "noAccessPage";
 	}
-	
-	
-	
+
 	@RequestMapping("/userLogged")
-	public String userLogged()
-	{
-	return "redirect:/";
-}
+	public String userLogged() {
+		return "redirect:/";
+	}
 
 	@RequestMapping("/login")
 	public ModelAndView login() {
@@ -79,104 +78,80 @@ public class UserController {
 
 	}
 
-	@RequestMapping(value="/addCart",method = RequestMethod.POST)
-	public ModelAndView goAddCart(HttpServletRequest request)
-	{
+	@RequestMapping(value = "/addCart", method = RequestMethod.POST)
+	public ModelAndView goAddCart(HttpServletRequest request) {
 		CartModel cartmodel = new CartModel();
-		ModelAndView mv=new ModelAndView();
-		try
-		{
-		
-		int pid=Integer.parseInt(request.getParameter("cartpid"));
-		double price=Double.parseDouble(request.getParameter("cartprice"));
-		int qty=Integer.parseInt(request.getParameter("prodquantity"));
-		String cartImage=request.getParameter("cartImage");
-		String cartProdName=request.getParameter("cartProdName");
-		cartmodel.setCartImage(cartImage);
-		cartmodel.setPname(cartProdName);
-		cartmodel.setProductId(pid);
-		cartmodel.setPrice(price);
-		cartmodel.setQuantity(qty);
-		cartDao.addToCart(cartmodel);
-		Principal principal = request.getUserPrincipal();
-		String userId = principal.getName();
-		CartModel exist = cartDao.getCartItem(pid, userId);
+		ModelAndView mv = new ModelAndView();
+		try {
 
+			int pid = Integer.parseInt(request.getParameter("cartpid"));
+			double price = Double.parseDouble(request.getParameter("cartprice"));
+			int qty = Integer.parseInt(request.getParameter("prodquantity"));
+			String cartImage = request.getParameter("cartImage");
+			String cartProdName = request.getParameter("cartProdName");
+			cartmodel.setCartImage(cartImage);
+			cartmodel.setPname(cartProdName);
+			cartmodel.setProductId(pid);
+			cartmodel.setPrice(price);
+			cartmodel.setQuantity(qty);
 		
-		
-		
-		if(exist==null)
-		{
-		CartModel cm=new CartModel();
-		cm.setPrice(price);
-		cm.setCartItemId(pid);
-		cm.setQuantity(qty);
-		cm.setCartImage(cartImage);
-		cm.setPname(cartProdName);
-		Usermodel c=userDao.getUserDetail(userId);
-		cm.getCartUserDetails();
-		cartDao.addToCart(cartmodel);
-		
-				
-		}
-		else
-		{
-			CartModel cm=new CartModel();
-			cm.setCartItemId(exist.getCartItemId());
-			cm.setPrice(price);
-			cm.setCartItemId(pid);
-			cm.setQuantity(qty);
-			cm.setCartImage(cartImage);
-			cm.setPname(cartProdName);
-			Usermodel c = userDao.getUserDetail(userId);
-			cm.setCartUserDetails(c);
-			cartDao.updateCart(cm);
-			List<CartModel> cartList=cartDao.getAll();
-			ModelAndView mv1 = new ModelAndView("display");//productDetails
-			mv1.addObject("cartlist",cartList);
-			return mv1;
-			
-		}
+			cartDao.addcart(cartmodel);
+			Principal principal = request.getUserPrincipal();
+			String userId = principal.getName();
+			CartModel exist = cartDao.getcartitembyid(userId);
 
+			if (exist == null) {
+				CartModel cm = new CartModel();
+				cm.setPrice(price);
+				cm.setCartItemId(pid);
+				cm.setQuantity(qty);
+				cm.setCartImage(cartImage);
+				cm.setPname(cartProdName);
+				Usermodel c = userDao.getUserDetail(userId);
 			
-		
-		
-		mv.addObject("cartDetails",cartDao.getCartById(userId));
-		mv.setViewName("viewcart");
-		return mv;
-		}
-		catch(NullPointerException ex)
-		{
+				cartDao.addcart(cartmodel);
+
+			} else {
+				CartModel cm = new CartModel();
+				cm.setCartItemId(exist.getCartItemId());
+				cm.setPrice(price);
+				cm.setCartItemId(pid);
+				cm.setQuantity(qty);
+				cm.setCartImage(cartImage);
+				cm.setPname(cartProdName);
+				Usermodel c = userDao.getUserDetail(userId);
+	
+				cartDao.updatecartitem(cm);
+				CartModel cartList = cartDao.getcartitembyid(userId);
+				ModelAndView mv1 = new ModelAndView("display");// productDetails
+				mv1.addObject("cartlist", cartList);
+				return mv1;
+
+			}
+
+			mv.addObject("cartDetails", cartDao.getcartitembyid(userId));
+			mv.setViewName("viewcart");
+			return mv;
+		} catch (NullPointerException ex) {
 			mv.setViewName("userproductlist");
 			return mv;
-		}
-	}
+			
+		}}
+	
+	/*
+	 * @RequestMapping("/cart_delete") public ModelAndView
+	 * editCart(HttpServletRequest request) { int cid =
+	 * Integer.valueOf(request.getParameter("id")); CartModel c =
+	 * cartDao.getId(cid); cartDao.deleteCart(c);
+	 * 
+	 * ModelAndView mv = new ModelAndView("viewcart"); List<CartModel> cartList
+	 * = cartDao.getAll();
+	 * 
+	 * mv.addObject("cartlist", cartList); return mv; }
+	 */
 
-	@RequestMapping("/viewcart")
-	public ModelAndView viewcart() {
-
-		ModelAndView mv = new ModelAndView("viewcart");
-		List<CartModel> cartList = cartDao.getAll();
-
-		mv.addObject("cartlist", cartList);
-		return mv;
-	}
-
-	@RequestMapping("/cart_delete")
-	public ModelAndView editCart(HttpServletRequest request) {
-		int cid = Integer.valueOf(request.getParameter("id"));
-		CartModel c = cartDao.getId(cid);
-		cartDao.deleteCart(c);
-
-		ModelAndView mv = new ModelAndView("viewcart");
-		List<CartModel> cartList = cartDao.getAll();
-
-		mv.addObject("cartlist", cartList);
-		return mv;
-	}
-
-	@RequestMapping("/customerDetails")
-	public ModelAndView customer(HttpServletRequest request) {
+	@RequestMapping("/checkout")
+	public ModelAndView checkout(HttpServletRequest request) {
 		int tot = Integer.valueOf(request.getParameter("tot"));
 		System.out.println(tot);
 		ModelAndView mv = new ModelAndView("checkout");

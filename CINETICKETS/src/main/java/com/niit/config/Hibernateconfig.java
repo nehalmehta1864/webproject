@@ -102,13 +102,7 @@ public class Hibernateconfig {
 		return new usermodeldaoimpl(sessionFactory);
 	}
 	
-	@Autowired
-	@Bean(name = "CartDao")
-	public CartDaoImpl getcartmodeldao(SessionFactory sessionFactory)
-
-	{
-		return new CartDaoImpl(sessionFactory);
-	}
+	
 	
 	@Autowired
 	@Bean(name = "OrdersDao")
@@ -116,6 +110,14 @@ public class Hibernateconfig {
 
 	{
 		return new ordersdaoimpl(sessionFactory);
+	}
+	
+	@Autowired
+	@Bean(name = "CartDao")
+	public CartDaoImpl getcartdao(SessionFactory sessionFactory)
+
+	{
+		return new CartDaoImpl(sessionFactory);
 	}
 }
 

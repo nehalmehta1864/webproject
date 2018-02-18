@@ -1,124 +1,133 @@
 package com.niit.daoimpl;
 
-import java.util.List;
-
-import javax.transaction.Transactional;
+import java.util.ArrayList;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-import com.niit.dao.cartmodeldao;
+import com.niit.dao.CartDao;
 import com.niit.model.CartModel;
+import com.niit.model.Productmodel;
 
-@SuppressWarnings("deprecation")
 @Repository("cartDao")
-public class CartDaoImpl implements cartmodeldao {
+public class CartDaoImpl implements CartDao {
 	@Autowired
-	
-	
-	private SessionFactory sessionFactory;
-	public CartDaoImpl(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	
-	
-
-
-	@Transactional
-	public boolean updateCart(CartModel cart) {
-		try {
-			sessionFactory.getCurrentSession().saveOrUpdate(cart);
-			return true;
-		} catch (Exception e) {
-			System.out.println("Exception arised" + e);
-
-		}
-		return false;
-
+	SessionFactory sessionFactory;
+	@Autowired
+	public CartDaoImpl(SessionFactory sessionfactory)
+	{
+		this.sessionFactory=sessionfactory;
 	}
 	
 	
-	@Transactional
-	public boolean deleteCart(CartModel cart) {
-		try {
-			sessionFactory.getCurrentSession().delete(cart);
-			return true;
-		} catch (Exception e) {
-			System.out.println("Exception arised" + e);
-
-		}
-		return false;
-	}
-
+	//for adding to cart
+ public void addcart(CartModel cart)
+ {
+	 Session ssn=sessionFactory.openSession();
+		Transaction t=ssn.getTransaction();
+		t.begin();
+		ssn.save(cart);
+		t.commit();
+		ssn.close();
+	 
+	 
+	 
+	 
+ }
+//getting the details of the product by id
+public Productmodel getprodbyid(int id) {
 	
-	@Transactional
-	public CartModel getCartItem(int cartItemId) {
-		Session session = sessionFactory.openSession();
-		CartModel cart = (CartModel) session.get(CartModel.class, new Integer(cartItemId));
-		/* sessionFactory.getCurrentSession().get(Product.class,id); */
-		return cart;
-	}
-
+		Session ssn=sessionFactory.openSession();
+	Transaction t=ssn.getTransaction();
+	t.begin();
+	Productmodel l = (Productmodel) ssn.get(Productmodel.class,id);
 	
-	@Transactional
-	public List<CartModel> getCartItems(String email) {
-		Query query = sessionFactory.getCurrentSession().createQuery("from Cart where email=:email");
-		query.setParameter("email", email);
-		@SuppressWarnings("unchecked")
-		List<CartModel> list = query.list();
-		return list;
-	}
-
+    t.commit();
+    ssn.close();
+   
 	
+	return l;
+}
+
+//getting cartitems by the name of the loginned user
+public ArrayList<CartModel> getcartitemsbyname(String name) {
+	Session ssn=sessionFactory.openSession();
+	Transaction t=ssn.getTransaction();
+	t.begin();
+	org.hibernate.Query q= ssn.createQuery("from Cart where username='"+name+"'");
+	ArrayList<CartModel> l=(ArrayList<CartModel>) q.list();
 	
-	public void addToCart(CartModel cart) {
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		session.persist(cart);
-		session.getTransaction().commit();
-	}
-
-
-
-
-
-	public Object getCartById(String userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
-
-
-	public List<CartModel> getAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
-
-
-	public CartModel getId(int cid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
-
-
-	public CartModel getCartItem(int pid, String userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
+    t.commit();
+    ssn.close();
+ 
 	
+	return l;
+}
+//dor deleting a cart item  by id
+public void deletecartitem(int cartid) {
+	Session ssn=sessionFactory.openSession();
+	Transaction t=ssn.getTransaction();
+	t.begin();
+	CartModel l = (CartModel) ssn.get(CartModel.class, cartid);
+	ssn.delete(l);
+			
+	
+    t.commit();
+    
+    ssn.close();
+	
+}
+//for getting a details of a cart item by id 
+public CartModel getcartitembyid(String cartid) {
+	Session ssn=sessionFactory.openSession();
+	Transaction t=ssn.getTransaction();
+	t.begin();
+	CartModel l = (CartModel) ssn.get(CartModel.class, cartid);
+	
+			
+	
+    t.commit();
+    
+    ssn.close();
+    return l;
+	
+}
+
+//for updating cartitem
+public void updatecartitem(CartModel cart) {
+	Session ssn=sessionFactory.openSession();
+	Transaction t=ssn.getTransaction();
+	t.begin();
+ssn.update(cart);
+	
+    t.commit();
+    
+    ssn.close();
+	
+}
+//if exixting product is added again the quantity incremented
+public void updatequan(int imp, int i) {
+	Session ssn=sessionFactory.openSession();
+	Transaction t=ssn.getTransaction();
+	t.begin();
+	 Query qry1 = ssn.createQuery("update Cart  set quantity="+i+"where cartid="+imp);
+	  
+	 
+			       
+	
+			          qry1.executeUpdate();
+			         				
+	
+    t.commit();
+    
+    ssn.close();
+	
+}
+
 
 }

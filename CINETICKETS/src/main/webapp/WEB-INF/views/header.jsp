@@ -63,7 +63,7 @@ class="glyphicon glyphicon"></span> PRODUCTS</a></li>
 
 </ul>
 
-<c:if test="${pageContext.request.userPrincipal.name  == 'admin'}">
+<c:if test="${pageContext.request.userPrincipal.name  == 'nehal'}">
 <li><a href="<c:url value="/admin" />">ADMIN</a></li>
 </c:if>
 <ul class="nav navbar-nav navbar-right">
@@ -71,16 +71,23 @@ class="glyphicon glyphicon"></span> PRODUCTS</a></li>
 
 
 
-<c:if test="${pageContext.request.userPrincipal.name  == 'admin@gmail.com'}">
+
+
+<c:if test="${pageContext.request.userPrincipal.name  == 'nehal'}">
 <li><a id="ad" style="color: white;"
 href="<c:url value="/admin/add"/>" role="button" aria-haspopup="true"
 aria-expanded="false">ADD</a></li>
 </c:if>
+
+
 <c:if test="${pageContext.request.userPrincipal.name  == null}">
 <li><a style="color: white;"
 href="<c:url value="/login"/>" role="button"
 aria-haspopup="true" aria-expanded="false">LOGIN</a></li>
 </c:if>
+
+
+
 
 <c:if test="${pageContext.request.userPrincipal.name == null }">
 

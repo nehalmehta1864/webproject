@@ -37,7 +37,7 @@ src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
 	</thead>
 	
 	<tbody>
-	<c:forEach items="${supplierlist}" var="supplier">
+	<c:forEach items="${supplierList}" var="supplier">
 	<tr>
 					<td>${supplier.supplierId }</td>
 					<td>${supplier.supplierName }</td>

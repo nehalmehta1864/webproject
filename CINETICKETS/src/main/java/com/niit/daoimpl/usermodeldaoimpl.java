@@ -10,7 +10,7 @@ import com.niit.dao.usermodeldao;
 
 import com.niit.model.Usermodel;
 
-@Repository
+@Repository("UserDao")
 public class usermodeldaoimpl implements usermodeldao {
 	
 	
@@ -40,11 +40,15 @@ public class usermodeldaoimpl implements usermodeldao {
 		return false;
 	}
 
-	public Usermodel get(String email) {
+	public Usermodel get(int userId) {
 		
 		{
-			Usermodel usermodel= (Usermodel) sessionFactory.getCurrentSession().get(Usermodel.class, new String(email));
-			return usermodel;			
+			Session session = sessionFactory.openSession();
+			session.beginTransaction();
+			Usermodel usermodel= (Usermodel) session.get(Usermodel.class, new Integer(userId));
+			session.getTransaction().commit();
+			session.close();
+			return usermodel;		
 			 
 		}
 
@@ -71,7 +75,7 @@ public class usermodeldaoimpl implements usermodeldao {
 
 
 
-	public Usermodel getUserDetail(String userId) {
+	public Usermodel getUserDetail(int userId) {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		Usermodel usermodel = (Usermodel) session.get(Usermodel.class, userId);
@@ -82,6 +86,48 @@ public class usermodeldaoimpl implements usermodeldao {
 		return usermodel;
 	
 	}
+
+
+
+	public Usermodel get(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	public Usermodel getUserDetail(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+/*
+	public Usermodel getUserDetail(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
+
+
+/*
+	public Usermodel getUserDetail(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	public Usermodel get(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
+
+
+
+	
+
+
+
 
 	
 }

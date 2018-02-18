@@ -3,6 +3,7 @@ package com.niit.controller;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,13 +19,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+
 import com.niit.dao.categorydao;
 import com.niit.dao.productmodeldao;
 import com.niit.dao.suppliermodeldao;
 import com.niit.dao.usermodeldao;
+
 import com.niit.model.Category;
 import com.niit.model.Productmodel;
 import com.niit.model.Supplier;
+import com.niit.model.Usermodel;
 
 @Controller
 public class HomeController
@@ -42,6 +46,8 @@ public class HomeController
 
 	@Autowired
 	usermodeldao userDao;
+	
+	
 
 	@RequestMapping("/")
 	ModelAndView goHome() {
@@ -190,7 +196,7 @@ public class HomeController
 	  RequestMethod.GET) public String deleteProduct(@PathVariable("prodId")
 	  int pid) { System.out.println("Product id" + pid);
 	 productDao.delete(productDao.getProductDetail(pid)); return
-	  "redirect:/adminproductlist"; }}
+	  "redirect:/adminproductlist"; }
 	 
 	/*@RequestMapping("/addUser")
 	ModelAndView addUserClick(@RequestParam("name") String name, @RequestParam("age") int age,
@@ -212,145 +218,8 @@ public class HomeController
 	}
 }*/
 
-/*	@RequestMapping(value="/addCart",method = RequestMethod.POST)
-	public ModelAndView goAddCart(HttpServletRequest request)
-	{
-		CartModel cartmodel = new CartModel();
-		System.out.println("Cart Details...........");
-		ModelAndView mv=new ModelAndView();
-		try
-		{
-		
-		int pid=Integer.parseInt(request.getParameter("cartpid"));
-		System.out.println("Cart Details..........."+Double.parseDouble(request.getParameter("cartprice")));
-		double price=Double.parseDouble(request.getParameter("cartprice"));
-		int qty=Integer.parseInt(request.getParameter("prodquantity"));
-		String cartImage=request.getParameter("cartImage");
-		String cartProdName=request.getParameter("cartProdName");
-		cartmodel.setCartImage(cartImage);
-		cartmodel.setPname(cartProdName);
-		cartmodel.setProductId(pid);
-		cartmodel.setQuantity(qty);
-		cartmodel.setPrice(price);
-		
-		
-		
-		cartDao.addToCart(cartmodel);
-		
-		
-		Principal  principal=request.getUserPrincipal();
-		String userId=principal.getName();
-		CartModel exist=cartDao.getCartItem(pid, userId);
-		
-		if(exist==null)
-		{
-		CartModel cm=new CartModel();
-		cm.setPrice(price);
-		cm.setCartItemId(pid);
-		cm.setQuantity(qty);
-		cm.setCartImage(cartImage);
-		cm.setPname(cartProdName);
-		Usermodel c = userDao.getUserDetail(userId);
-		cm.getCartUserDetails();
-		
-		cartDao.addToCart(cm);
-		}
-		else
-		{
-			CartModel cm=new CartModel();
-			cm.setCartItemId(exist.getCartItemId());
-			cm.setPrice(price);
-			cm.setCartItemId(pid);
-			cm.setQuantity(exist.getQuantity()+qty);
-			cm.setCartImage(cartImage);
-			cm.setPname(cartProdName);
-			Usermodel c = userDao.getUserDetail(userId);
-			cm.setCartUserDetails(c);
-			cartDao.updateCart(cm);
-		}
-		
-		//mv.addObject("cartDetails",cartDao.getCartById(userId));
-		mv.setViewName("viewcart");
-		return mv;
-		}
-		catch(NullPointerException ex)
-		{
-			mv.setViewName("userproductlist");
-			return mv;
-		}
-		}
-
 	
-	
-	
-
-@RequestMapping("/viewcart")
-public ModelAndView viewcart(){
-	
-	ModelAndView mv=new ModelAndView("viewcart");
-	List<CartModel> cartList=cartDao.getAll();
-	
-	mv.addObject("cartlist", cartList);
-	return mv;
 }
-
-@RequestMapping("/cart_delete")
-public ModelAndView editCart(HttpServletRequest request)
-{
-	int cid=Integer.valueOf(request.getParameter("id"));
-	CartModel c=cartDao.getId(cid);
-	cartDao.deleteCart(c);
-	
-	ModelAndView mv=new ModelAndView("viewcart");
-	List<CartModel> cartList=cartDao.getAll();
-	
-	mv.addObject("cartlist", cartList);
-	return mv;
-}
-
-@RequestMapping("/customerDetails")
-public ModelAndView customer(HttpServletRequest request)
-{
-	int tot=Integer.valueOf(request.getParameter("tot"));
-	System.out.println(tot);
-	ModelAndView mv=new ModelAndView("checkout");
-	mv.addObject("tot", tot);
-	return mv;
-}
-
-@RequestMapping("/invoice")
-public ModelAndView invoice(HttpServletRequest request)
-{
-	String name=request.getParameter("name");
-	String add=request.getParameter("add");
-	String phone=request.getParameter("contact_no");
-	String email=request.getParameter("email");
-	String tot=request.getParameter("tot");
-	Usermodel usermodel=new Usermodel();
-	usermodel.setU_name(name);
-	usermodel.setAddress(add);
-	usermodel.setPhone(phone);
-	usermodel.setU_mail(email);
-	userDao.persist(usermodel);
-	
-	ModelAndView mv=new ModelAndView("invoice");
-	mv.addObject("name", name);
-	mv.addObject("add", add);
-	mv.addObject("phone", phone);
-	mv.addObject("email", email);
-	mv.addObject("tot", tot);
-	
-
-	return mv;
-}
-
-@RequestMapping("/Confirm")
-public String confirm()
-{
-	return "Confirm";
-}
-*/
-
 
 
 

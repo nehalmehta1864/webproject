@@ -22,15 +22,23 @@ public class Usermodel implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
+
+	
+	@Column(name="ID")
 	@GeneratedValue
-	
-	@Column(name = "userid")
-	private int userid;
+    private int userid;
 	
 	
+	public int getUserid() {
+		return userid;
+	}
+
+	public void setUserid(int userid) {
+		this.userid = userid;
+	}
 
 	@Column(name = "U_MAIL")
-	String u_mail;
+	private String u_mail;
 
 	@Column(name = "U_NAME")
 	private String u_name;
@@ -50,13 +58,7 @@ public class Usermodel implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "userdetails")
 	private Set<Orders> userOrders = new HashSet<Orders>(0);
 
-	public int getId() {
-		return userid;
-	}
-
-	public void setId(int id) {
-		this.userid = id;
-	}
+	
 
 	public Set<Orders> getUserOrders() {
 		return userOrders;
@@ -122,6 +124,10 @@ public class Usermodel implements Serializable {
 		this.role = role;
 	}
 
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -130,8 +136,6 @@ public class Usermodel implements Serializable {
 		this.enabled = enabled;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+
 
 }

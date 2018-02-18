@@ -89,12 +89,12 @@
 						Grand Total = <i class="fa fa-inr" aria-hidden="true"></i>
 		<c:out value="${tot}" />
 					</h1>
-					<a href="./"><button class="btn btn-success">Continue
+					<a href="index"><button class="btn btn-success">Continue
 							Shopping</button></a>
 				</div>
-				System.out.println("Cart Details...........");
+			
 				<div class="btn-group cart">
-					<form action="customerDetails" method="post">
+					<form action="checkout" method="post">
 
 						<input type="text" name="tot" value="${tot}" /> <input
 							type="submit" value="checkout" />
